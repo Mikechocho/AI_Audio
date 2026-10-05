@@ -1,0 +1,38 @@
+export const mockSummaries = [
+  {
+    transcriptionId: '1001',
+    createdAt: '2026-09-08T14:00:00',
+    audioFileName: 'sample_call_01.wav',
+    companyName: 'A商事',
+    extractedName: '山田 太郎',
+    extractedPhone: '090-1234-5678',
+    extractedSubject: '見積依頼',
+    summaryText: '新製品の仕様に関する問い合わせ。見積もり送付を希望。',
+    transcriptionText: 'オペレーター：お電話ありがとうございます。...',
+    tags: ['見積', '急ぎ']
+  },
+  {
+    transcriptionId: '1002',
+    createdAt: '2026-09-08T14:30:00',
+    audioFileName: 'sample_call_02.wav',
+    companyName: 'B建設',
+    extractedName: '佐藤 花子',
+    extractedPhone: '080-9876-5432',
+    extractedSubject: '解約相談',
+    summaryText: 'プラン解約についての相談。次回更新月についての説明を行った。',
+    transcriptionText: 'オペレーター：お電話ありがとうございます。...',
+    tags: ['解約', '契約変更']
+  },
+  {
+    transcriptionId: '1003',
+    createdAt: '2026-09-08T15:15:00',
+    audioFileName: 'sample_call_03.wav',
+    companyName: 'A商事',
+    extractedName: '鈴木 一郎',
+    extractedPhone: '03-1111-2222',
+    extractedSubject: '技術サポート',
+    summaryText: '管理画面のログイン障害。設定変更手順を案内し復旧完了。',
+    transcriptionText: 'オペレーター：サポート窓口です。...',
+    tags: ['サポート', '重要']
+  }
+]

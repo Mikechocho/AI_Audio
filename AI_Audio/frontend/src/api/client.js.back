@@ -1,0 +1,97 @@
+/**
+ * バックエンドAPI呼び出しモジュール
+ *
+ * Vite の proxy 設定（vite.config.js）により、
+ * /api/... へのリクエストは Spring Boot（http://localhost:8080）に転送されます。
+ */
+
+/**
+ * レスポンスの共通処理
+ * エラー時はバックエンドが返すJSONのmessage（例: DB接続エラーの説明）を優先して表示します
+ * @param {Response} response fetchのレスポンス
+ * @param {string} defaultMessage messageが取得できない場合のエラーメッセージ
+ * @returns {Promise<any>} レスポンスボディ（JSON）
+ */
+async function handleResponse(response, defaultMessage) {
+  if (!response.ok) {
+    let message = `${defaultMessage} (HTTP ${response.status})`
+    try {
+      const body = await response.json()
+      if (body.message) {
+        message = body.message
+      }
+    } catch {
+      // ボディがJSONでない場合はデフォルトメッセージのまま
+    }
+    throw new Error(message)
+  }
+  
+  // 204 No Content（レスポンスボディなし）の場合の考慮
+  if (response.status === 204) {
+    return null
+  }
+  return response.json()
+}
+
+/**
+ * 登録済みデータの一覧を取得する
+ * @returns {Promise<Array>} 音声テキスト・要約データの配列
+ */
+export async function fetchSummaries() {
+  const response = await fetch('/api/summaries')
+  return handleResponse(response, '一覧の取得に失敗しました')
+}
+
+/**
+ * サンプル音声ファイルの一覧を取得する
+ * @returns {Promise<Array<string>>} 音声ファイル名の配列
+ */
+export async function fetchAudioFiles() {
+  const response = await fetch('/api/audio-files')
+  return handleResponse(response, '音声ファイル一覧の取得に失敗しました')
+}
+
+/**
+ * 音声ファイルの解析・要約パイプラインを実行する (POST)
+ * @param {string} filename 音声ファイル名 (例: "test1.wav")
+ * @returns {Promise<Object>} 保存・生成された要約データオブジェクト
+ */
+export async function processAudio(filename) {
+  const response = await fetch('/api/summaries/process', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ filename })
+  })
+  return handleResponse(response, '音声の解析・要約処理に失敗しました')
+}
+
+/**
+ * 要約データ（氏名・用件・要約テキスト等）を更新する (PUT)
+ * @param {number|string} id 更新対象のID (transcriptionId)
+ * @param {Object} data 更新データ
+ * @returns {Promise<Object>} 更新後の要約データオブジェクト
+ */
+export async function updateSummary(id, data) {
+  const response = await fetch(`/api/summaries/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  })
+  return handleResponse(response, '要約データの更新に失敗しました')
+}
+
+/**
+ * 要約データを削除（論理削除）する (DELETE)
+ * @param {number|string} id 削除対象のID (transcriptionId)
+ * @returns {Promise<any>}
+ */
+export async function deleteSummary(id) {
+  const response = await fetch(`/api/summaries/${id}`, {
+    method: 'DELETE'
+  })
+  return handleResponse(response, '要約データの削除に失敗しました')
+}

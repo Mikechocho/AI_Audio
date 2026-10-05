@@ -1,0 +1,23 @@
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+
+// Vite設定
+// - port 5173 でフロントエンド開発サーバを起動します（npm run dev）
+// - /api と /audio へのリクエストはバックエンド（Spring Boot: 8080）に転送されます
+//   ⇒ フロントエンドのコードでは fetch('/api/summaries') のように相対パスで書けばOK
+export default defineConfig({
+  plugins: [vue()],
+  server: {
+    port: 5173,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/audio': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+    },
+  },
+})

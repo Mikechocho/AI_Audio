@@ -1,0 +1,17 @@
+import { createRouter, createWebHistory } from 'vue-router'
+import FileUploader from '../components/FileUploader.vue'
+import SummaryTable from '../components/SummaryTable.vue'
+import TodoList from '../components/TodoList.vue'
+
+const routes = [
+  { path: '/', name: 'upload', component: FileUploader },
+  { path: '/data', name: 'table', component: SummaryTable },
+  { path: '/todo', name: 'todo', component: TodoList }
+]
+
+const router = createRouter({
+  history: createWebHistory(),
+  routes
+})
+
+export default router
